@@ -13,13 +13,24 @@ class RestaurantsController < ApplicationController
     redirect_to '/restaurants'
   end
 
-# define which params we are going to allow us to pass to controller
+# define which params we are going to allow us to pass to controller, without this security flaw.
   def restaurant_params
     params.require(:restaurant).permit(:name)
   end
 
   def show
     @restaurant = Restaurant.find(params[:id])
+  end
+
+  def edit
+    @restaurant = Restaurant.find(params[:id])
+  end
+
+  def update
+    @restaurant = Restaurant.find(params[:id])
+    @restaurant.update(restaurant_params)
+
+    redirect_to '/restaurants'
   end
 
 end
