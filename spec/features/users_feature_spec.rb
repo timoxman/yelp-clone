@@ -14,7 +14,7 @@ feature 'User can sign in and out' do
 		end
 	end
 
-	context 'user signed in on the homepage' do
+	context 'user signed up from the homepage' do
 		before do
 			visit '/'
 			click_link 'Sign up'

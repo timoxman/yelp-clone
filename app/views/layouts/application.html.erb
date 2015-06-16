@@ -13,7 +13,14 @@
 	<%= link_to 'Sign out', destroy_user_session_path, method: :delete %>
 <% else %>
 	<%= link_to 'Sign up', new_user_registration_path %>
-	<%= link_to 'Sign in', new_user_session_path %>
+  <%= link_to 'Sign in', new_user_session_path %>
+	<%= link_to 'Sign in with Facebook', user_omniauth_authorize_path(:facebook) %>
+
+<!--  Finally, if you want to allow your users to cancel sign up with Facebook, you can redirect them to
+ "cancel_user_registration_path". This will remove all session data starting with "devise." and the new_with_session hook
+ above will no longer be called.  -->
+
+
 <% end %>
 
 <%= notice %>
