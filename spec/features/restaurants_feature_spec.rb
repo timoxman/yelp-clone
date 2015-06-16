@@ -69,4 +69,27 @@ feature 'restaurants' do
 
   end
 
+  context 'deleting restaurants with reviews' do
+
+  before {Restaurant.create name: 'KFC'}
+
+    scenario 'removes a restaurant and associated reviews when a user clicks a delete link' do
+      visit '/restaurants'
+      click_link 'Review KFC'
+      fill_in "Thoughts", with: "so so"
+      select '3', from: 'Rating'
+      click_button 'Leave Review'
+      click_link 'Delete KFC'
+      expect(page).not_to have_content 'KFC'
+      expect(page).to have_content 'Restaurant deleted successfully'
+      expect(page).not_to have_content('so so')
+    end
+  end
+
+
+
+
+
+
+
 end
