@@ -2,16 +2,26 @@ require 'rails_helper'
 
 feature 'restaurants' do
 
+  def sign_up(email='test@example.com')
+    visit '/'
+    click_link 'Sign up'
+    fill_in "Email", with: email
+    fill_in "Password", with: 'testtest'
+    fill_in "Password confirmation", with: 'testtest'
+    click_button 'Sign up'
+  end
 
-def sign_up
-  visit '/'
-  click_link 'Sign up'
-  fill_in "Email", with: 'test@example.com'
-  fill_in "Password", with: 'testtest'
-  fill_in "Password confirmation", with: 'testtest'
-  click_button 'Sign up'
-end
+  def sign_out
+    visit '/'
+    click_link 'Sign out'
+  end
 
+  def create_restaurant(name='KFC')
+    visit '/restaurants'
+    click_link 'Add a restaurant'
+    fill_in 'Name', with: name
+    click_button 'Create Restaurant'
+  end
 
   context 'no restaurants have been added' do
     scenario 'should display a prompt to add a restaurant' do
@@ -23,10 +33,12 @@ end
   end
 
   context 'restaurants have been added' do
-    before do
-      Restaurant.create(name: 'KFC')
-    end
+    # before do
+    #   Restaurant.create(name: 'KFC')
+    # end
     scenario 'display restaurants' do
+      sign_up
+      create_restaurant
       visit '/restaurants'
       expect(page).to have_content('KFC')
       expect(page).not_to have_content('No restaurants yet')
@@ -46,21 +58,22 @@ end
   end
 
   context 'viewing restaurants' do
-    let!(:kfc){Restaurant.create(name: 'KFC')}
+    # let!(:kfc){Restaurant.create(name: 'KFC')}
     scenario 'lets a user view a restaurant' do
+      sign_up
+      create_restaurant
       visit '/restaurants'
       click_link 'KFC'
       expect(page).to have_content 'KFC'
-      expect(current_path).to eq "/restaurants/#{kfc.id}"
+      # expect(current_path).to eq "/restaurants/#{kfc.id}"
     end
   end
 
   context 'editing restaurants' do
 
-    before {Restaurant.create name: 'KFC'}
-
     scenario 'let a user edit a restaurant' do
       sign_up
+      create_restaurant
       visit '/restaurants'
       click_link 'Edit KFC'
       fill_in 'Name', with: 'Kentucky Fried Chicken'
@@ -72,24 +85,37 @@ end
 
   context 'deleting restaurants' do
 
-  before {Restaurant.create name: 'KFC'}
+    # before {Restaurant.create name: 'KFC'}
+    # before {create_restaurant}
 
-    scenario 'removes a restaurant when a user clicks a delete link' do
+    scenario 'removes a restaurant when the creator clicks a delete link' do
       sign_up
+      create_restaurant
       visit '/restaurants'
       click_link 'Delete KFC'
       expect(page).not_to have_content 'KFC'
       expect(page).to have_content 'Restaurant deleted successfully'
     end
 
+    scenario 'cannot edit or remove another user created restaurant' do
+      sign_up
+      create_restaurant
+      sign_out
+      sign_up('bob@mcbobs.com')
+      visit '/restaurants'
+      expect(page).not_to have_content 'Delete KFC'
+      expect(page).not_to have_content 'Edit KFC'
+    end
+
   end
 
   context 'deleting restaurants with reviews' do
 
-  before {Restaurant.create name: 'KFC'}
+    # before {Restaurant.create name: 'KFC'}
 
     scenario 'removes a restaurant and associated reviews when a user clicks a delete link' do
       sign_up
+      create_restaurant
       visit '/restaurants'
       click_link 'Review KFC'
       fill_in "Thoughts", with: "so so"
