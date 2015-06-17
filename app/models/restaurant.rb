@@ -6,4 +6,8 @@ class Restaurant < ActiveRecord::Base
 
   validates :name, length: {minimum: 3}, uniqueness: true
 
+  def already_Reviewed?(user)
+    return Review.where(user: user, restaurant: self).first
+  end
+
 end
