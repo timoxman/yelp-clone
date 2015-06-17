@@ -4,10 +4,12 @@ class RestaurantsController < ApplicationController
     @restaurants = Restaurant.all
   end
 
+#intention to create a record
   def new
     @restaurant = Restaurant.new
   end
 
+#creates a record and then redirects to another place
   def create
     @restaurant = Restaurant.new(restaurant_params)
     if @restaurant.save
