@@ -16,4 +16,17 @@ class ReviewsController < ApplicationController
     params.require(:review).permit(:thoughts, :rating)
   end
 
+  def destroy
+    # why do we need to pass in restaurant when we don't use it?
+    @review = Review.find(params[:id])
+    if @review.can_you_delete?(current_user)
+      @review.destroy
+      flash[:notice] = 'Review deleted successfully'
+      redirect_to '/restaurants'
+    else
+      flash[:notice] = "can't delete another review"
+      redirect_to '/restaurants'
+    end
+  end
+
 end
