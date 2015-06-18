@@ -25,7 +25,8 @@ feature 'reviewing' do
     sign_out
     sign_up("hallo@yomama.com")
     leave_review('Great', '5')
-    expect(page).to have_content('Average rating: 4')
+    #expect(page).to have_content('Average rating: 4')
+    expect(page).to have_content('Average rating: ★★★★☆')
   end
 
   context 'User can only leave one review per restaurant' do
